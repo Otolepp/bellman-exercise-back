@@ -40,16 +40,22 @@ const getCityCharges = async (req, res) => {
         if(stats.length == 0) {
             return res.status(404).json({'no data found' : `no buildings correspond to your parameters}`});
         }
-
-        var charges = [];
+        
+        var sum = 0, min = Infinity, max = 0;
         
         for (let index = 0; index < stats.length; index++) {
-            charges[index] = calculateCharges(stats[index], req.query);
+            const {charges, min_charges, max_charges} = calculateCharges(stats[index], req.query);
+
+            if(min_charges < min){
+                min = min_charges;
+            }
+            if(max_charges > max){
+                max = max_charges;
+            }
+            sum += charges; 
         }
 
-        const mean = charges.reduce((a, b) => a + b, 0) / charges.length || 0;
-        const min = Math.min(...charges);
-        const max = Math.max(...charges);
+        const mean = sum / stats.length;
         
         res.status(200).json({ 'mean' : mean, 'min' : min, 'max' : max});
 
@@ -77,15 +83,21 @@ const getDepartmentCharges = async (req, res) => {
             return res.status(404).json({'no data found' : `no buildings correspond to your parameters}`});
         }
 
-        var charges = [];
+        var sum = 0, min = Infinity, max = 0;
         
         for (let index = 0; index < stats.length; index++) {
-            charges[index] = calculateCharges(stats[index], req.query);
+            const {charges, min_charges, max_charges} = calculateCharges(stats[index], req.query);
+
+            if(min_charges < min){
+                min = min_charges;
+            }
+            if(max_charges > max){
+                max = max_charges;
+            }
+            sum += charges; 
         }
 
-        const mean = charges.reduce((a, b) => a + b, 0) / charges.length || 0;
-        const min = Math.min(...charges);
-        const max = Math.max(...charges);
+        const mean = sum / stats.length;
         
         res.status(200).json({ 'mean' : mean, 'min' : min, 'max' : max});
 

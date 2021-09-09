@@ -11,3 +11,7 @@ app.listen(port, () => {
     console.log(`server listening on port ${port}`);
 });
 
+
+app.get('*', (req, res) => {
+    return res.status(404).send("route not found");
+});

@@ -16,27 +16,39 @@ function getCondoSizeValue(x) {
 
 function calculateCharges(stat, query){
     var charges = 0;
+    var min_charges = 0;
+    var max_charges = 0;
     if(between(stat.condo_size, 0, 49)) {
         charges += stat.service_none;
         if(query.elevator === "true"){
             charges += stat.service_elevator;
+            min_charges += stat.service_elevator - stat.service_elevator_std;
+            max_charges += stat.service_elevator + stat.service_elevator_std;
         }
         if(query.heating === "true"){
             charges += stat.service_heater;
+            min_charges += stat.service_elevator - stat.service_heater_std;
+            max_charges += stat.service_elevator + stat.service_heater_std;
         }
     }
     else {
         if(query.elevator === "true"){
             charges += stat.service_elevator;
+            min_charges += stat.service_elevator - stat.service_elevator_std;
+            max_charges += stat.service_elevator + stat.service_elevator_std;
         }
         if(query.heating === "true" || query.elevator === "true" || query.employee === "true"){
             charges += stat.service_elevator_heater_employee;
+            min_charges += stat.service_elevator - stat.service_elevator_heater_employee_std;
+            max_charges += stat.service_elevator + stat.service_elevator_heater_employee_std;
         }
         if(query.heating === "true" || query.elevator === "true"){
             charges += stat.service_elevator_heater;
+            min_charges += stat.service_elevator - stat.service_elevator_heater_std;
+            max_charges += stat.service_elevator + stat.service_elevator_heater_std;
         }
     }
-    return charges;
+    return {charges, min_charges, max_charges};
 }
 
 function between(x, min, max) {
